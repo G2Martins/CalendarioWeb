@@ -6,7 +6,7 @@ Este é o backend de um sistema de Calendário de Eventos desenvolvido com **Jav
 
 ```bash
 src/main/java/com/gustavoMartinsGripaldi/avaliacao
-├── config  (Configurações gerais)
+│── Application.java (Classe principal do Spring Boot)
 │
 ├── dto  (Objetos de Transferência de Dados)
 │
