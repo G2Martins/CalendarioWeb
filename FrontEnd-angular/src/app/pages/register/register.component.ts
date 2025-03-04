@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+	selector: 'app-register',
+	templateUrl: './register.component.html',
+	styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
+	email = '';
+	password = '';
+	errorMessage = '';
 
-  constructor() { }
+	constructor(private authService: AuthService, private router: Router) { }
 
-  ngOnInit(): void {
-  }
-
+	register() {
+		this.authService.register({ email: this.email, password: this.password }).subscribe(
+			() => this.router.navigate(['/login']),
+			() => this.errorMessage = 'Erro ao criar usuário!'
+		);
+	}
 }

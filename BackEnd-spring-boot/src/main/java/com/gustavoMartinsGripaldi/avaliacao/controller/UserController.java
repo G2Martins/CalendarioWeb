@@ -4,8 +4,10 @@ import com.gustavoMartinsGripaldi.avaliacao.dto.UserDTO;
 import com.gustavoMartinsGripaldi.avaliacao.model.User;
 import com.gustavoMartinsGripaldi.avaliacao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -35,6 +37,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(u -> ResponseEntity.ok(UserDTO.fromEntity(u)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
     }
 }
