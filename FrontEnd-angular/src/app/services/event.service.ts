@@ -10,8 +10,8 @@ const API_URL = 'http://localhost:8080/api/events';
 export class EventService {
   constructor(private http: HttpClient) {}
 
-  getEventsByUser(userId: string): Observable<any> {
-    return this.http.get(`${API_URL}/user/${userId}`);
+  getEventsByUser(userEmail: string): Observable<any> {
+    return this.http.get(`${API_URL}/user/${userEmail}`);
   }
 
   createEvent(event: any): Observable<any> {
