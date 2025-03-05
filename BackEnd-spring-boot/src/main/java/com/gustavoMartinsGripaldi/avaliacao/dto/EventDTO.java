@@ -4,21 +4,24 @@ import com.gustavoMartinsGripaldi.avaliacao.model.Event;
 import java.time.LocalDateTime;
 
 public class EventDTO {
+    private String id;
     private String descricao;
     private LocalDateTime horaInicio;
     private LocalDateTime horaTermino;
-    private String userId;
+    private String userEmail;
 
     public EventDTO() {}
 
-    public EventDTO( String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userId) {
+    public EventDTO(String id, String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userEmail) {
+        this.id = id;
         this.descricao = descricao;
         this.horaInicio = horaInicio;
         this.horaTermino = horaTermino;
-        this.userId = userId;
+        this.userEmail = userEmail;
     }
 
- 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
@@ -29,15 +32,20 @@ public class EventDTO {
     public LocalDateTime getHoraTermino() { return horaTermino; }
     public void setHoraTermino(LocalDateTime horaTermino) { this.horaTermino = horaTermino; }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 
     public static EventDTO fromEntity(Event event) {
         return new EventDTO(
+            event.getId(),
             event.getDescricao(),
             event.getHoraInicio(),
             event.getHoraTermino(),
-            event.getUserId()
+            event.getUserEmail()
         );
+    }
+
+    public Event toEntity() {
+        return new Event(id, descricao, horaInicio, horaTermino, userEmail);
     }
 }

@@ -17,33 +17,33 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-    
-    // Criar um evento
+
+    // 🔹 Criar um evento
     @PostMapping
     public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
         Event event = new Event(
-            null,  
+            null,
             eventDTO.getDescricao(),
             eventDTO.getHoraInicio(),
             eventDTO.getHoraTermino(),
-            eventDTO.getUserId()
+            eventDTO.getUserEmail()
         );
 
         Event createdEvent = eventService.createEvent(event);
         return ResponseEntity.ok(EventDTO.fromEntity(createdEvent));
     }
 
-    // Buscar todos os eventos de um usuário
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<EventDTO>> getEventsByUser(@PathVariable String userId) {
-        List<EventDTO> events = eventService.getEventsByUser(userId)
-                                           .stream()
-                                           .map(EventDTO::fromEntity)
-                                           .collect(Collectors.toList());
+    // 🔹 Buscar todos os eventos de um usuário pelo e-mail
+    @GetMapping("/user/{email}")
+    public ResponseEntity<List<EventDTO>> getEventsByUser(@PathVariable String email) {
+        List<EventDTO> events = eventService.getEventsByUserEmail(email)
+                                            .stream()
+                                            .map(EventDTO::fromEntity)
+                                            .collect(Collectors.toList());
         return ResponseEntity.ok(events);
     }
 
-    // Buscar evento por ID
+    // 🔹 Buscar evento por ID
     @GetMapping("/{eventId}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable String eventId) {
         Optional<Event> event = eventService.getEventById(eventId);
@@ -51,7 +51,7 @@ public class EventController {
                     .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Atualizar um evento existente
+    // 🔹 Atualizar um evento pelo ID
     @PutMapping("/{eventId}")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable String eventId, @RequestBody EventDTO eventDTO) {
         Optional<Event> existingEvent = eventService.getEventById(eventId);
@@ -59,21 +59,17 @@ public class EventController {
             return ResponseEntity.notFound().build();
         }
 
-        Event event = new Event(
-            eventId, 
-            eventDTO.getDescricao(),
-            eventDTO.getHoraInicio(),
-            eventDTO.getHoraTermino(),
-            eventDTO.getUserId()
-        );
-
-        Event updatedEvent = eventService.updateEvent(eventId, event);
+        Event updatedEvent = eventService.updateEvent(eventId, eventDTO.toEntity());
         return ResponseEntity.ok(EventDTO.fromEntity(updatedEvent));
     }
 
-    // Excluir um evento
+    // 🔹 Deletar um evento pelo ID
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Void> deleteEvent(@PathVariable String eventId) {
+        if (eventService.getEventById(eventId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         eventService.deleteEvent(eventId);
         return ResponseEntity.noContent().build();
     }

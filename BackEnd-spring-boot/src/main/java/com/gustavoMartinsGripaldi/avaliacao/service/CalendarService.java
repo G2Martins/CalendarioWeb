@@ -1,17 +1,13 @@
 package com.gustavoMartinsGripaldi.avaliacao.service;
 
 import com.gustavoMartinsGripaldi.avaliacao.dto.EventDTO;
-import com.gustavoMartinsGripaldi.avaliacao.dto.UserDTO;
 import com.gustavoMartinsGripaldi.avaliacao.model.Event;
-import com.gustavoMartinsGripaldi.avaliacao.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,46 +18,40 @@ public class CalendarService {
     @Autowired
     private EventService eventService;
 
-    @Autowired
-    private UserService userService;
-
-    // 🔹 Retorna todos os eventos de um usuário com DTOs
+    // 🔹 Retorna todos os eventos de um usuário pelo e-mail
     public List<EventDTO> getUserEvents(String email) {
-        Optional<User> user = userService.getUserByEmail(email);
-        if (user.isEmpty()) {
-            logger.warn("Usuário com email {} não encontrado", email);
-            throw new RuntimeException("Usuário não encontrado.");
+        List<Event> events = eventService.getEventsByUserEmail(email);
+
+        if (events.isEmpty()) {
+            logger.warn("Nenhum evento encontrado para o usuário: {}", email);
         }
 
-        return eventService.getEventsByUser(user.get().getId())
-                .stream()
+        return events.stream()
                 .map(EventDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
     // 🔹 Cria um evento para um usuário
     public EventDTO createEventForUser(String email, EventDTO eventDTO) {
-        Optional<User> user = userService.getUserByEmail(email);
-        if (user.isEmpty()) {
-            logger.warn("Tentativa de criar evento para usuário inexistente: {}", email);
-            throw new RuntimeException("Usuário não encontrado.");
-        }
-
-        // Gera um ID manualmente (ou poderia vir do front-end, se necessário)
-        String eventId = UUID.randomUUID().toString();
-
         Event event = new Event(
-                eventId,
+                null,
                 eventDTO.getDescricao(),
                 eventDTO.getHoraInicio(),
                 eventDTO.getHoraTermino(),
-                user.get().getId()
+                email
         );
 
         Event savedEvent = eventService.createEvent(event);
-        logger.info("Evento criado com sucesso para usuário {} com ID {}", email, eventId);
+        logger.info("Evento criado com sucesso para usuário {} com ID {}", email, savedEvent.getId());
 
         return EventDTO.fromEntity(savedEvent);
+    }
+
+    // 🔹 Atualiza um evento pelo ID
+    public EventDTO updateEvent(String eventId, EventDTO eventDTO) {
+        Event updatedEvent = eventService.updateEvent(eventId, eventDTO.toEntity());
+        logger.info("Evento {} atualizado com sucesso", eventId);
+        return EventDTO.fromEntity(updatedEvent);
     }
 
     // 🔹 Deleta um evento pelo ID
@@ -72,23 +62,5 @@ public class CalendarService {
         }
         eventService.deleteEvent(eventId);
         logger.info("Evento {} deletado com sucesso", eventId);
-    }
-
-    // 🔹 Cria um usuário
-    public UserDTO createUser(UserDTO userDTO) {
-        // Gera um ID manualmente para o usuário
-        String userId = UUID.randomUUID().toString();
-
-        User user = new User(
-                userId,
-                userDTO.getNome(),
-                userDTO.getEmail(),
-                userDTO.getSenha()
-        );
-
-        User savedUser = userService.createUser(user);
-        logger.info("Usuário criado com sucesso: {} (ID: {})", savedUser.getEmail(), userId);
-
-        return UserDTO.fromEntity(savedUser);
     }
 }

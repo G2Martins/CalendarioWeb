@@ -11,16 +11,16 @@ public class Event {
     private String descricao;
     private LocalDateTime horaInicio;
     private LocalDateTime horaTermino;
-    private String userId;
+    private String userEmail;
 
     public Event() {}
 
-    public Event(String id, String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userId) {
+    public Event(String id, String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userEmail) {
         this.id = id;
         this.descricao = descricao;
         this.horaInicio = horaInicio;
         this.horaTermino = horaTermino;
-        this.userId = userId;
+        this.userEmail = userEmail;
     }
 
     public String getId() { return id; }
@@ -35,6 +35,6 @@ public class Event {
     public LocalDateTime getHoraTermino() { return horaTermino; }
     public void setHoraTermino(LocalDateTime horaTermino) { this.horaTermino = horaTermino; }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 }

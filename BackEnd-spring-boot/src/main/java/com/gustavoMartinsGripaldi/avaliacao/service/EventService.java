@@ -14,46 +14,42 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    // 🔹 Cria um evento, verificando conflitos de horário
+    // 🔹 Criar um evento (verificando conflitos de horário)
     public Event createEvent(Event event) {
-        List<Event> conflictingEvents = eventRepository.findByUserId(event.getUserId())
+        List<Event> conflictingEvents = eventRepository.findByUserEmail(event.getUserEmail())
                 .stream()
                 .filter(e -> overlaps(e, event))
                 .toList();
-    
+
         if (!conflictingEvents.isEmpty()) {
             throw new RuntimeException("Já existe um evento nesse horário.");
         }
-    
-        // Criar o evento sem passar um ID
-        return eventRepository.save(new Event(null, event.getDescricao(), event.getHoraInicio(), event.getHoraTermino(), event.getUserId()));
-    }
-    
-    
 
-    // 🔹 Lista eventos de um usuário
-    public List<Event> getEventsByUser(String userId) {
-        return eventRepository.findByUserId(userId);
+        return eventRepository.save(event);
     }
 
-    // 🔹 Busca um evento pelo ID
+    // 🔹 Buscar eventos pelo email do usuário
+    public List<Event> getEventsByUserEmail(String email) {
+        return eventRepository.findByUserEmail(email);
+    }
+
+    // 🔹 Buscar um evento pelo ID
     public Optional<Event> getEventById(String eventId) {
         return eventRepository.findById(eventId);
     }
 
-    // 🔹 Atualiza um evento
+    // 🔹 Atualizar um evento pelo ID
     public Event updateEvent(String eventId, Event updatedEvent) {
         return eventRepository.findById(eventId).map(event -> {
             event.setDescricao(updatedEvent.getDescricao());
             event.setHoraInicio(updatedEvent.getHoraInicio());
             event.setHoraTermino(updatedEvent.getHoraTermino());
-            event.setUserId(updatedEvent.getUserId());
+            event.setUserEmail(updatedEvent.getUserEmail());
             return eventRepository.save(event);
         }).orElseThrow(() -> new RuntimeException("Evento não encontrado."));
     }
-    
 
-    // 🔹 Remove um evento
+    // 🔹 Deletar um evento pelo ID
     public void deleteEvent(String eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new RuntimeException("Evento não encontrado.");
