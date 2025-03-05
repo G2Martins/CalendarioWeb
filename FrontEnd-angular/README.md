@@ -77,6 +77,7 @@ Acesse no navegador: **[http://localhost:4200](http://localhost:4200)**
 ✅ Prevenção de sobreposição de eventos com alerta de conflito ⚠️  
 ✅ Interface responsiva e intuitiva  
 ✅ Alerta vermelho ao fazer logout  
+✅ Listagem de Eventos
 
 ## 📖 Ajuda e Referências
 
