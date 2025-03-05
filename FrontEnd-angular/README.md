@@ -1,27 +1,89 @@
-# FrontEndAngular
+# 📅 Projeto Calendário - Frontend Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.2.
+Bem-vindo ao frontend do Projeto Calendário! 🎉 Este é um aplicativo desenvolvido com Angular que permite a gestão de eventos de forma intuitiva e eficiente.
 
-## Development server
+## 🚀 Tecnologias Utilizadas
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- **Angular 14** - Framework principal para construção da interface.
+- **TypeScript** - Tipagem estática para um código mais seguro.
+- **Tailwind CSS** - Estilização moderna e responsiva.
+- **RxJS** - Para manipulação de eventos assíncronos.
 
-## Code scaffolding
+## 📦 Instalação
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Certifique-se de ter o **Node.js** instalado. Em seguida, clone o repositório e instale as dependências:
 
-## Build
+```sh
+# Clonar o repositório
+git clone https://github.com/seu-repositorio.git
+cd nome-do-projeto
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# Instalar dependências
+npm install
+```
 
-## Running unit tests
+## 🔥 Executando o Servidor
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Para rodar o projeto em modo de desenvolvimento, use:
 
-## Running end-to-end tests
+```sh
+ng serve
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Acesse no navegador: **[http://localhost:4200](http://localhost:4200)**
 
-## Further help
+## 🎨 Estrutura do Projeto
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+📂 src/
+ ├── 📁 app/                  # Código principal
+ │   ├── 📁 components/       # Componentes reutilizáveis
+ │   ├── 📁 services/         # Serviços para integração com o backend
+ │   ├── 📁 pages/            # Páginas do Projeto
+ │   ├── 📄 app.module.ts     # Módulo principal
+ │   ├── 📄 app.component.ts  # Componente raiz
+ ├── 📁 assets/               # Imagens e outros arquivos estáticos
+ ├── 📄 index.html            # Arquivo principal HTML
+ ├── 📄 styles.css            # Estilização global
+```
+
+## 🛠 Comandos Principais
+
+- Criar um novo componente:
+  ```sh
+  ng generate component nome-do-componente
+  ```
+- Criar um novo serviço:
+  ```sh
+  ng generate service nome-do-servico
+  ```
+- Compilar o projeto:
+  ```sh
+  ng build
+  ```
+- Rodar testes unitários:
+  ```sh
+  ng test
+  ```
+- Executar testes end-to-end:
+  ```sh
+  ng e2e
+  ```
+
+## ⚠️ Funcionalidades Implementadas
+
+✅ Autenticação de usuários via **localStorage**  
+✅ Criação, edição e remoção de eventos  
+✅ Prevenção de sobreposição de eventos com alerta de conflito ⚠️  
+✅ Interface responsiva e intuitiva  
+✅ Alerta vermelho ao fazer logout  
+
+## 📖 Ajuda e Referências
+
+Para mais detalhes sobre o Angular CLI, consulte a documentação oficial: [Angular CLI Overview](https://angular.io/cli)
+
+---
+
+## 🎬 Autor
+Desenvolvido por [Gustavo Martins Gripaldi](https://g2martins.github.io/G2Portfolio/).
+
