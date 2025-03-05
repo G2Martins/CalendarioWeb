@@ -3,24 +3,38 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+	selector: 'app-register',
+	templateUrl: './register.component.html',
+	styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  nome = '';  
-  email = '';
-  senha = '';  
-  errorMessage = '';
+	nome = '';
+	email = '';
+	senha = '';
+	errorMessage = '';
+	successMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+	constructor(private authService: AuthService, private router: Router) { }
 
-  register() {
-    const userData = { nome: this.nome, email: this.email, senha: this.senha };
+	isEmailValid(email: string): boolean {
+		const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		return emailPattern.test(email);
+	}
 
-    this.authService.register(userData).subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: () => this.errorMessage = 'Erro ao criar usuário!'
-    });
-  }
+	register() {
+		if (!this.isEmailValid(this.email)) {
+			this.errorMessage = 'Formato de e-mail inválido!';
+			return;
+		}
+
+		const userData = { nome: this.nome, email: this.email, senha: this.senha };
+
+		this.authService.register(userData).subscribe({
+			next: () => {
+				this.successMessage = 'Usuário cadastrado com sucesso!';
+				setTimeout(() => this.router.navigate(['/login']), 1000);
+			  },
+			error: () => this.errorMessage = 'Erro ao criar usuário!'
+		});
+	}
 }

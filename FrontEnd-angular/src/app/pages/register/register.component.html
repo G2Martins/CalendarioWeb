@@ -1,12 +1,13 @@
 <div class="flex items-center justify-center h-screen bg-gradient-to-br from-green-400 to-blue-900">
   <div class="bg-white p-8 rounded-2xl shadow-lg w-96">
-    <h2 class="text-center text-2xl font-semibold">Cadastro</h2>
+    <h2 class="text-center text-2xl font-semibold">Cadastro de Usuário</h2>
     
     <input class="w-full p-2 mt-4 border rounded" [(ngModel)]="nome" placeholder="Nome" type="text"> 
     <input class="w-full p-2 mt-2 border rounded" [(ngModel)]="email" placeholder="Email" type="email">
     <input class="w-full p-2 mt-2 border rounded" [(ngModel)]="senha" placeholder="Senha" type="password">
     
     <p *ngIf="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="text-green-500 text-sm mt-2">{{ successMessage }}</p>
     
     <button (click)="register()" class="w-full bg-green-600 text-white p-2 mt-4 rounded">Cadastrar</button>
     
