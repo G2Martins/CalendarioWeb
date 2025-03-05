@@ -49,7 +49,14 @@ export class CalendarComponent implements OnInit {
 			dias.push({
 				date: dataAtual,
 				isToday: dataAtual.toDateString() === new Date().toDateString(),
-				events: eventos.filter(e => new Date(e.horaInicio).toDateString() === dataAtual.toDateString())
+				events: eventos.filter(e => {
+					const eventoInicio = new Date(e.horaInicio);
+					const eventoFim = new Date(e.horaTermino);
+					return (
+						eventoInicio.toDateString() === dataAtual.toDateString() || 
+						(eventoInicio < dataAtual && eventoFim >= dataAtual) 
+					);
+				})
 			});
 		}
 
@@ -61,6 +68,7 @@ export class CalendarComponent implements OnInit {
 		this.descricao = '';
 		this.horaInicio = date ? date.toISOString().slice(0, 16) : '';
 		this.horaTermino = date ? date.toISOString().slice(0, 16) : '';
+		this.alertaConflito = '';
 		this.modalAberto = true;
 	}
 
@@ -70,6 +78,7 @@ export class CalendarComponent implements OnInit {
 		this.horaInicio = evento.horaInicio;
 		this.horaTermino = evento.horaTermino;
 		this.modalAberto = true;
+		this.alertaConflito = '';
 	}
 
 	verificarConflito(): boolean {
@@ -118,7 +127,7 @@ export class CalendarComponent implements OnInit {
 				this.carregarEventos();
 			});
 		}
-
+		this.alertaConflito = '';
 		this.modalAberto = false;
 	}
 
