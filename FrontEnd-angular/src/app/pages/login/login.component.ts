@@ -12,8 +12,13 @@ export class LoginComponent {
 	email = '';
 	password = '';
 	errorMessage = '';
+	showPassword = false;
 
 	constructor(private authService: AuthService, private router: Router) { }
+
+	togglePasswordVisibility() {
+		this.showPassword = !this.showPassword;
+	}
 
 	login() {
 		this.authService.getUserByEmail(this.email).subscribe({
