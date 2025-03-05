@@ -76,8 +76,10 @@ export class CalendarComponent implements OnInit {
 		const inicio = new Date(this.horaInicio);
 		const fim = new Date(this.horaTermino);
 
-		for (let dia of this.diasDoMes) {
-			for (let evento of dia.events) {
+		for (let dia of this.diasDoMes) 
+		{
+			for (let evento of dia.events) 
+			{
 				const eventoInicio = new Date(evento.horaInicio);
 				const eventoFim = new Date(evento.horaTermino);
 

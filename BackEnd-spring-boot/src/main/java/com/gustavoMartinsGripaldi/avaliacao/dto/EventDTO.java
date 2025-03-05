@@ -3,6 +3,7 @@ package com.gustavoMartinsGripaldi.avaliacao.dto;
 import com.gustavoMartinsGripaldi.avaliacao.model.Event;
 import java.time.LocalDateTime;
 
+//DTO (Data Transfer Object) é um padrão de projeto usado para transferir dados entre camadas de um sistema
 public class EventDTO {
     private String id;
     private String descricao;
