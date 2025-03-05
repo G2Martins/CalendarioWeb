@@ -1,22 +1,26 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+
 @Component({
-	selector: 'app-register',
-	templateUrl: './register.component.html',
-	styleUrls: ['./register.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-	email = '';
-	password = '';
-	errorMessage = '';
+  nome = '';  
+  email = '';
+  senha = '';  
+  errorMessage = '';
 
-	constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-	register() {
-		this.authService.register({ email: this.email, password: this.password }).subscribe(
-			() => this.router.navigate(['/login']),
-			() => this.errorMessage = 'Erro ao criar usuário!'
-		);
-	}
+  register() {
+    const userData = { nome: this.nome, email: this.email, senha: this.senha };
+
+    this.authService.register(userData).subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.errorMessage = 'Erro ao criar usuário!'
+    });
+  }
 }

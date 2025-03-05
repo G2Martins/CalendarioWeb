@@ -5,16 +5,16 @@ import { Observable } from 'rxjs';
 const API_URL = 'http://localhost:8080/api/users';
 
 @Injectable({
-	providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuthService {
-	constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-	register(user: any): Observable<any> {
-		return this.http.post(`${API_URL}`, user);
-	}
+  register(user: { nome: string; email: string; senha: string }): Observable<any> {
+    return this.http.post(`${API_URL}`, user);
+  }
 
-	getUserByEmail(email: string): Observable<any> {
-		return this.http.get(`${API_URL}/email/${email}`);
-	}
+  getUserByEmail(email: string): Observable<any> {
+    return this.http.get(`${API_URL}/email/${email}`);
+  }
 }
