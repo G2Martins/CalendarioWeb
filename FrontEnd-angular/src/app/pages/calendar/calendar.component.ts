@@ -18,6 +18,7 @@ export class CalendarComponent implements OnInit {
 	descricao: string = '';
 	horaInicio: string = '';
 	horaTermino: string = '';
+	alertaConflito: string = '';
 
 	constructor(private eventService: EventService, private authService: AuthService) { }
 
@@ -40,7 +41,6 @@ export class CalendarComponent implements OnInit {
 	}
 
 	gerarCalendario(eventos: any[]): void {
-		const primeiroDia = new Date(this.anoAtual, this.mesAtual, 1);
 		const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
 		const dias = [];
 
@@ -72,7 +72,34 @@ export class CalendarComponent implements OnInit {
 		this.modalAberto = true;
 	}
 
+	verificarConflito(): boolean {
+		const inicio = new Date(this.horaInicio);
+		const fim = new Date(this.horaTermino);
+
+		for (let dia of this.diasDoMes) {
+			for (let evento of dia.events) {
+				const eventoInicio = new Date(evento.horaInicio);
+				const eventoFim = new Date(evento.horaTermino);
+
+				if (
+					(inicio >= eventoInicio && inicio < eventoFim) ||
+					(fim > eventoInicio && fim <= eventoFim) ||
+					(inicio <= eventoInicio && fim >= eventoFim)
+				) {
+					this.alertaConflito = 'Conflito de horário! Escolha outro horário para o evento.';
+					return true;
+				}
+			}
+		}
+		this.alertaConflito = '';
+		return false;
+	}
+
 	salvarEvento(): void {
+		if (this.verificarConflito()) {
+			return;
+		}
+		
 		const evento = {
 			descricao: this.descricao,
 			horaInicio: this.horaInicio,
@@ -124,6 +151,6 @@ export class CalendarComponent implements OnInit {
 
 	get mesAtualNome(): string {
 		return new Date(this.anoAtual, this.mesAtual).toLocaleString('pt-BR', { month: 'long' })
-			.replace(/^./, (char) => char.toUpperCase()); // Garante a primeira letra maiúscula
+			.replace(/^./, (char) => char.toUpperCase());
 	}
 }

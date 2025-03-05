@@ -39,6 +39,10 @@
         <button *ngIf="eventoSelecionado" (click)="excluirEvento()" class="px-4 py-2 bg-red-500 text-white rounded">Excluir</button>
         <button (click)="salvarEvento()" class="px-4 py-2 bg-blue-500 text-white rounded">{{ eventoSelecionado ? 'Salvar' : 'Adicionar' }}</button>
       </div>
+      <div *ngIf="alertaConflito" class="bg-red-500 text-white p-2 rounded mt-2">
+        {{ alertaConflito }}
+      </div>
+      
     </div>
   </div>
   
