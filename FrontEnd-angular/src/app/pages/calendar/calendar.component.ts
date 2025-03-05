@@ -3,123 +3,127 @@ import { EventService } from 'src/app/services/event.service';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css']
+	selector: 'app-calendar',
+	templateUrl: './calendar.component.html',
+	styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-  userEmail: string = '';
-  diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-  diasDoMes: any[] = [];
-  mesAtual: number = new Date().getMonth();
-  anoAtual: number = new Date().getFullYear();
-  modalAberto: boolean = false;
-  eventoSelecionado: any = null;
-  descricao: string = '';
-  horaInicio: string = '';
-  horaTermino: string = '';
+	userEmail: string = '';
+	diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+	diasDoMes: any[] = [];
+	mesAtual: number = new Date().getMonth();
+	anoAtual: number = new Date().getFullYear();
+	modalAberto: boolean = false;
+	eventoSelecionado: any = null;
+	descricao: string = '';
+	horaInicio: string = '';
+	horaTermino: string = '';
 
-  constructor(private eventService: EventService, private authService: AuthService) {}
+	constructor(private eventService: EventService, private authService: AuthService) { }
 
-  ngOnInit(): void {
-    const userData = localStorage.getItem('userEmail');
-    if (userData) {
-      this.userEmail = userData;
-      this.carregarEventos();
-    }
-  }
+	ngOnInit(): void {
+		const userData = localStorage.getItem('userEmail');
+		if (userData) {
+			this.userEmail = userData;
+			console.log("Usuário logado:", this.userEmail);
+			this.carregarEventos();
+		} else {
+			console.log("Nenhum usuário encontrado no localStorage.");
+		}
+	}
 
-  carregarEventos(): void {
-    this.eventService.getEventsByUser(this.userEmail).subscribe(events => {
-      this.gerarCalendario(events);
-    });
-  }
 
-  gerarCalendario(eventos: any[]): void {
-    const primeiroDia = new Date(this.anoAtual, this.mesAtual, 1);
-    const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
-    const dias = [];
+	carregarEventos(): void {
+		this.eventService.getEventsByUser(this.userEmail).subscribe(events => {
+			this.gerarCalendario(events);
+		});
+	}
 
-    for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
-      const dataAtual = new Date(this.anoAtual, this.mesAtual, dia);
-      dias.push({
-        date: dataAtual,
-        isToday: dataAtual.toDateString() === new Date().toDateString(),
-        events: eventos.filter(e => new Date(e.horaInicio).toDateString() === dataAtual.toDateString())
-      });
-    }
+	gerarCalendario(eventos: any[]): void {
+		const primeiroDia = new Date(this.anoAtual, this.mesAtual, 1);
+		const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
+		const dias = [];
 
-    this.diasDoMes = dias;
-  }
+		for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+			const dataAtual = new Date(this.anoAtual, this.mesAtual, dia);
+			dias.push({
+				date: dataAtual,
+				isToday: dataAtual.toDateString() === new Date().toDateString(),
+				events: eventos.filter(e => new Date(e.horaInicio).toDateString() === dataAtual.toDateString())
+			});
+		}
 
-  abrirModal(date?: Date): void {
-    this.eventoSelecionado = null;
-    this.descricao = '';
-    this.horaInicio = date ? date.toISOString().slice(0, 16) : '';
-    this.horaTermino = date ? date.toISOString().slice(0, 16) : '';
-    this.modalAberto = true;
-  }
+		this.diasDoMes = dias;
+	}
 
-  editarEvento(evento: any): void {
-    this.eventoSelecionado = evento;
-    this.descricao = evento.descricao;
-    this.horaInicio = evento.horaInicio;
-    this.horaTermino = evento.horaTermino;
-    this.modalAberto = true;
-  }
+	abrirModal(date?: Date): void {
+		this.eventoSelecionado = null;
+		this.descricao = '';
+		this.horaInicio = date ? date.toISOString().slice(0, 16) : '';
+		this.horaTermino = date ? date.toISOString().slice(0, 16) : '';
+		this.modalAberto = true;
+	}
 
-  salvarEvento(): void {
-    const evento = {
-      descricao: this.descricao,
-      horaInicio: this.horaInicio,
-      horaTermino: this.horaTermino,
-      userEmail: this.userEmail
-    };
+	editarEvento(evento: any): void {
+		this.eventoSelecionado = evento;
+		this.descricao = evento.descricao;
+		this.horaInicio = evento.horaInicio;
+		this.horaTermino = evento.horaTermino;
+		this.modalAberto = true;
+	}
 
-    if (this.eventoSelecionado) {
-      this.eventService.updateEvent(this.eventoSelecionado.id, evento).subscribe(() => {
-        this.carregarEventos();
-      });
-    } else {
-      this.eventService.createEvent(evento).subscribe(() => {
-        this.carregarEventos();
-      });
-    }
+	salvarEvento(): void {
+		const evento = {
+			descricao: this.descricao,
+			horaInicio: this.horaInicio,
+			horaTermino: this.horaTermino,
+			userEmail: this.userEmail
+		};
 
-    this.modalAberto = false;
-  }
+		if (this.eventoSelecionado) {
+			this.eventService.updateEvent(this.eventoSelecionado.id, evento).subscribe(() => {
+				this.carregarEventos();
+			});
+		} else {
+			this.eventService.createEvent(evento).subscribe(() => {
+				this.carregarEventos();
+			});
+		}
 
-  excluirEvento(): void {
-    if (this.eventoSelecionado) {
-      this.eventService.deleteEvent(this.eventoSelecionado.id).subscribe(() => {
-        this.carregarEventos();
-      });
-    }
-    this.modalAberto = false;
-  }
+		this.modalAberto = false;
+	}
 
-  prevMonth(): void {
-    if (this.mesAtual === 0) {
-      this.mesAtual = 11;
-      this.anoAtual--;
-    } else {
-      this.mesAtual--;
-    }
-    this.carregarEventos();
-  }
+	excluirEvento(): void {
+		if (this.eventoSelecionado) {
+			this.eventService.deleteEvent(this.eventoSelecionado.id).subscribe(() => {
+				this.carregarEventos();
+			});
+		}
+		this.modalAberto = false;
+	}
 
-  nextMonth(): void {
-    if (this.mesAtual === 11) {
-      this.mesAtual = 0;
-      this.anoAtual++;
-    } else {
-      this.mesAtual++;
-    }
-    this.carregarEventos();
-  }
+	prevMonth(): void {
+		if (this.mesAtual === 0) {
+			this.mesAtual = 11;
+			this.anoAtual--;
+		} else {
+			this.mesAtual--;
+		}
+		this.carregarEventos();
+	}
 
-  get mesAtualNome(): string {
-	return new Date(this.anoAtual, this.mesAtual).toLocaleString('pt-BR', { month: 'long' })
-	  .replace(/^./, (char) => char.toUpperCase()); // Garante a primeira letra maiúscula
-  }  
+	nextMonth(): void {
+		if (this.mesAtual === 11) {
+			this.mesAtual = 0;
+			this.anoAtual++;
+		} else {
+			this.mesAtual++;
+		}
+		this.carregarEventos();
+	}
+
+	get mesAtualNome(): string {
+		return new Date(this.anoAtual, this.mesAtual).toLocaleString('pt-BR', { month: 'long' })
+			.replace(/^./, (char) => char.toUpperCase()); // Garante a primeira letra maiúscula
+	}
 }

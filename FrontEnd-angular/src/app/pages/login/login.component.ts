@@ -20,6 +20,7 @@ export class LoginComponent {
 			next: (user) => {
 				if (user && user.senha === this.password) {
 					localStorage.setItem('userId', user.id);
+					localStorage.setItem('userEmail', this.email);
 					this.router.navigate(['/calendar']);
 				} else {
 					this.errorMessage = 'Credenciais inválidas!';
