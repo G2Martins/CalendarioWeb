@@ -33,13 +33,13 @@ public class EventService {
     public List<Event> getEventsByUserEmail(String email) {
         // Eventos criados pelo usuário
         List<Event> createdEvents = eventRepository.findByUserEmail(email);
-        
+
         // Eventos onde o usuário foi convidado, mas somente os que estão ACEITO
         List<Event> invitedEvents = eventRepository.findByConvidadosContaining(email)
                 .stream()
                 .filter(event -> event.getStatus() == EventStatus.ACEITO)
                 .toList();
-        
+
         // Mesclar as duas listas
         createdEvents.addAll(invitedEvents);
         return createdEvents;
@@ -91,16 +91,18 @@ public class EventService {
                 throw new RuntimeException("Usuário não convidado para este evento.");
             }
 
-            // Se pelo menos um convidado aceita, o evento é marcado como ACEITO
             if (status == EventStatus.ACEITO) {
+                // Se pelo menos um convidado aceita, o evento é marcado como ACEITO
                 event.setStatus(EventStatus.ACEITO);
-            } else {
-                // Se todos os convidados recusarem, o evento é marcado como RECUSADO
-                boolean todosRecusaram = event.getConvidados().stream()
-                        .allMatch(email -> email.equals(convidadoEmail));
-
-                if (todosRecusaram) {
-                    event.setStatus(EventStatus.RECUSADO);
+            } else if (status == EventStatus.RECUSADO) {
+                // Remove o email do convidado ao recusar
+                event.getConvidados().remove(convidadoEmail);
+                // Se não houver mais convidados, define o status como SEM_CONVIDADOS; caso
+                // contrário, mantém como PENDENTE
+                if (event.getConvidados().isEmpty()) {
+                    event.setStatus(EventStatus.SEM_CONVIDADOS);
+                } else {
+                    event.setStatus(EventStatus.PENDENTE);
                 }
             }
 
@@ -113,7 +115,8 @@ public class EventService {
         return eventRepository.findByConvidadosContaining(convidadoEmail);
     }
 
-    // 🔹 Buscar eventos em que um usuário foi convidado e possuem um status específico
+    // 🔹 Buscar eventos em que um usuário foi convidado e possuem um status
+    // específico
     public List<Event> getInvitedEventsByStatus(String convidadoEmail, EventStatus status) {
         return eventRepository.findByConvidadosContaining(convidadoEmail)
                 .stream()
