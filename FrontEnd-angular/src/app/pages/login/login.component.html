@@ -1,14 +1,21 @@
+<!-- Container principal ocupando a tela inteira com fundo gradiente -->
 <div
   class="flex items-center justify-center h-screen bg-gradient-to-br from-yellow-400 to-blue-900"
 >
+  <!-- Caixa branca centralizada para o formulário de login -->
   <div class="bg-white p-8 rounded-2xl shadow-lg w-96">
+    <!-- Título do formulário -->
     <h2 class="text-center text-2xl font-semibold">Login</h2>
+
+    <!-- Campo de entrada para email -->
     <input
       class="w-full p-2 mt-4 border rounded"
       [(ngModel)]="email"
       placeholder="Email"
       type="email"
     />
+
+    <!-- Campo de entrada para senha com botão para exibir/ocultar senha -->
     <div class="relative w-full mt-2">
       <input
         class="w-full p-2 border rounded pr-10"
@@ -24,15 +31,21 @@
         {{ showPassword ? "🙈" : "👁️" }}
       </button>
     </div>
+
+    <!-- Exibição de mensagem de erro caso ocorra -->
     <p *ngIf="errorMessage" class="text-red-500 text-sm mt-2">
       {{ errorMessage }}
     </p>
+
+    <!-- Botão de login -->
     <button
       (click)="login()"
       class="w-full bg-blue-600 text-white p-2 mt-4 rounded"
     >
       Entrar
     </button>
+
+    <!-- Link para criar conta -->
     <p class="text-center mt-4">
       <a routerLink="/register" class="text-blue-600">Criar Conta</a>
     </p>

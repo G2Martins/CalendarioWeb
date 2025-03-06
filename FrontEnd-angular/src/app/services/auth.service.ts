@@ -5,16 +5,26 @@ import { Observable } from 'rxjs';
 const API_URL = 'http://localhost:8080/api/users';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-  register(user: { nome: string; email: string; senha: string }): Observable<any> {
-    return this.http.post(`${API_URL}`, user);
-  }
+	/**
+     * Registra um novo usuário na API.
+     * @param user Objeto contendo os dados do usuário: nome, email e senha.
+     * @returns Um Observable que emite a resposta da API.
+     */
+	register(user: { nome: string; email: string; senha: string }): Observable<any> {
+		return this.http.post(`${API_URL}`, user);
+	}
 
-  getUserByEmail(email: string): Observable<any> {
-    return this.http.get(`${API_URL}/email/${email}`);
-  }
+	/**
+     * Busca um usuário pelo email.
+     * @param email O email do usuário a ser buscado.
+     * @returns Um Observable que emite os dados do usuário retornados pela API.
+     */
+	getUserByEmail(email: string): Observable<any> {
+		return this.http.get(`${API_URL}/email/${email}`);
+	}
 }

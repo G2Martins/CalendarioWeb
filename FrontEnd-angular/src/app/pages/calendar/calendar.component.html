@@ -1,48 +1,67 @@
+<!-- Menu Bar: Exibe o cabeçalho com opções de navegação -->
 <app-menu-bar></app-menu-bar>
+
 <div class="container mx-auto p-6">
-    <div class="flex justify-between items-center mb-4">
-      <button (click)="prevMonth()" class="px-4 py-2 bg-gray-200 rounded">◀</button>
-      <h2 class="text-xl font-bold">{{ mesAtualNome }} {{ anoAtual }}</h2>
-      <button (click)="nextMonth()" class="px-4 py-2 bg-gray-200 rounded">▶</button>
+	
+	<!-- Cabeçalho do calendário: Botões de navegação e exibição do mês/ano atual -->
+	<div class="flex justify-between items-center mb-4">
+    	<button (click)="prevMonth()" class="px-4 py-2 bg-gray-200 rounded">◀</button>
+      	<h2 class="text-xl font-bold">{{ mesAtualNome }} {{ anoAtual }}</h2>
+      	<button (click)="nextMonth()" class="px-4 py-2 bg-gray-200 rounded">▶</button>
     </div>
-  
+
+	<!-- Grade do calendário: 7 colunas representando os dias da semana -->
     <div class="grid grid-cols-7 gap-2">
-        <div class="text-center font-semibold" *ngFor="let day of diasSemana">{{ day }}</div>
-      
+
+		<!-- Cabeçalho dos dias da semana -->
+		<div class="text-center font-semibold" *ngFor="let day of diasSemana">{{ day }}</div>
+		
+		<!-- Cada célula representa um dia do mês -->
         <div *ngFor="let day of diasDoMes" 
-             class="border p-4 min-h-[80px] relative flex flex-col items-center justify-start"
-             [class.bg-gray-100]="day.isToday">
-          <span class="text-sm font-semibold">{{ day.date.getDate() }}</span>
-      
-          <div *ngFor="let event of day.events" 
-               class="mt-1 p-1 bg-blue-500 text-white text-xs rounded cursor-pointer w-full text-center"
-               (click)="editarEvento(event)">
-            {{ event.descricao }}
-          </div>
-      
-          <button (click)="abrirModal(day.date)" class="absolute bottom-2 right-2 text-gray-500 text-lg">+</button>
-        </div>
+            class="border p-4 min-h-[80px] relative flex flex-col items-center justify-start"
+            [class.bg-gray-100]="day.isToday">
+        	
+			<!-- Exibe o número do dia -->
+			<span class="text-sm font-semibold">{{ day.date.getDate() }}</span>
+
+			<!-- Lista dos eventos agendados para este dia -->
+          	<div *ngFor="let event of day.events" 
+            	class="mt-1 p-1 bg-blue-500 text-white text-xs rounded cursor-pointer w-full text-center"
+            	(click)="editarEvento(event)"> {{ event.descricao }}
+        	</div>
+			
+			<!-- Botão para abrir o modal de criação/edição de evento para o dia -->
+          	<button (click)="abrirModal(day.date)" class="absolute bottom-2 right-2 text-gray-500 text-lg">+</button>
+        
+		</div>
       </div>      
   </div>
   
-  <!-- Modal -->
-  <div *ngIf="modalAberto" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-      <h3 class="text-lg font-bold">{{ eventoSelecionado ? 'Editar Evento' : 'Novo Evento' }}</h3>
+  <!-- Modal para criação/edição de evento -->
+<div *ngIf="modalAberto" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+	<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+
+		<!-- Título do modal: "Editar Evento" ou "Novo Evento", dependendo se um evento foi selecionado -->
+    	<h3 class="text-lg font-bold">{{ eventoSelecionado ? 'Editar Evento' : 'Novo Evento' }}</h3>
       
-      <input [(ngModel)]="descricao" placeholder="Descrição" class="w-full border p-2 rounded mt-2">
-      <input [(ngModel)]="horaInicio" type="datetime-local" class="w-full border p-2 rounded mt-2">
-      <input [(ngModel)]="horaTermino" type="datetime-local" class="w-full border p-2 rounded mt-2">
-  
-      <div class="flex justify-between mt-4">
-        <button (click)="modalAberto = false" class="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
-        <button *ngIf="eventoSelecionado" (click)="excluirEvento()" class="px-4 py-2 bg-red-500 text-white rounded">Excluir</button>
-        <button (click)="salvarEvento()" class="px-4 py-2 bg-blue-500 text-white rounded">{{ eventoSelecionado ? 'Salvar' : 'Adicionar' }}</button>
-      </div>
-      <div *ngIf="alertaConflito" class="bg-red-500 text-white p-2 rounded mt-2">
-        {{ alertaConflito }}
-      </div>
+      	<input [(ngModel)]="descricao" placeholder="Descrição" class="w-full border p-2 rounded mt-2">
+      	<input [(ngModel)]="horaInicio" type="datetime-local" class="w-full border p-2 rounded mt-2">
+      	<input [(ngModel)]="horaTermino" type="datetime-local" class="w-full border p-2 rounded mt-2">
+		
+		<!-- Botões de ação do modal -->
+      	<div class="flex justify-between mt-4">
+        	<button (click)="modalAberto = false" class="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
+        	<button *ngIf="eventoSelecionado" (click)="excluirEvento()" class="px-4 py-2 bg-red-500 text-white rounded">Excluir</button>
+        	<button (click)="salvarEvento()" class="px-4 py-2 bg-blue-500 text-white rounded">{{ eventoSelecionado ? 'Salvar' : 'Adicionar' }}</button>
+      	</div>
+      	
+		<!-- Alerta de conflito de horários, exibido se houver erro ao salvar o evento -->
+		<div *ngIf="alertaConflito" class="bg-red-500 text-white p-2 rounded mt-2">
+			{{ alertaConflito }}
+		</div>
       
     </div>
-  </div>
+</div>
+
+<!-- Componente de convites: exibe a lista de convites pendentes -->
 <app-invites></app-invites>

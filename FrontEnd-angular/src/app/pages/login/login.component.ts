@@ -23,6 +23,7 @@ export class LoginComponent {
 	login() {
 		this.authService.getUserByEmail(this.email).subscribe({
 			next: (user) => {
+				// Verifica se o usuário existe e se a senha está correta
 				if (user && user.senha === this.password) {
 					localStorage.setItem('userId', user.id);
 					localStorage.setItem('userEmail', this.email);
@@ -32,6 +33,7 @@ export class LoginComponent {
 				}
 			},
 			error: (error) => {
+				// Trata os erros da requisição, diferenciando usuário não encontrado de outros erros
 				if (error.status === 404) {
 					this.errorMessage = 'Usuário não encontrado!';
 				} else {

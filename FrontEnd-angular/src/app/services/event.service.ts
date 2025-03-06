@@ -8,7 +8,10 @@ const API_URL = 'http://localhost:8080/api/events';
 	providedIn: 'root',
 })
 export class EventService {
+	// Subject para armazenar e emitir a lista de eventos de forma reativa
 	private eventosSubject = new BehaviorSubject<any[]>([]);
+
+	// Observable que permite a outros componentes se inscreverem nas atualizações dos eventos
 	eventos$ = this.eventosSubject.asObservable();
 
 	constructor(private http: HttpClient) { }
@@ -17,6 +20,10 @@ export class EventService {
 		return localStorage.getItem('userEmail');
 	}
 
+	 /**
+     * Carrega os eventos do usuário e atualiza o BehaviorSubject.
+     * Caso o email do usuário não esteja disponível, a função é encerrada.
+     */
 	carregarEventos(): void {
 		const userEmail = this.getUserEmail();
 		if (!userEmail) return;

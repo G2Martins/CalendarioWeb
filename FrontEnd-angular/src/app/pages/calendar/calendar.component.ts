@@ -23,6 +23,7 @@ export class CalendarComponent implements OnInit {
 	constructor(private eventService: EventService, private authService: AuthService) { }
 
 	ngOnInit(): void {
+		// Obtém o email do usuário logado a partir do localStorage
 		const userData = localStorage.getItem('userEmail');
 		if (userData) {
 			this.userEmail = userData;
@@ -33,13 +34,14 @@ export class CalendarComponent implements OnInit {
 		}
 	}
 
-
+	// Carrega os eventos do usuário a partir do serviço
 	carregarEventos(): void {
 		this.eventService.getEventsByUser(this.userEmail).subscribe(events => {
 			this.gerarCalendario(events);
 		});
 	}
 
+	// Gera a estrutura do calendário para o mês atual
 	gerarCalendario(eventos: any[]): void {
 		const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
 		const dias = [];
@@ -63,6 +65,7 @@ export class CalendarComponent implements OnInit {
 		this.diasDoMes = dias;
 	}
 
+	// Abre o modal para criação ou edição de evento
 	abrirModal(date?: Date): void {
 		this.eventoSelecionado = null;
 		this.descricao = '';
@@ -72,6 +75,7 @@ export class CalendarComponent implements OnInit {
 		this.modalAberto = true;
 	}
 
+	// Abre o modal preenchendo os dados de um evento existente para edição
 	editarEvento(evento: any): void {
 		this.eventoSelecionado = evento;
 		this.descricao = evento.descricao;
@@ -81,6 +85,7 @@ export class CalendarComponent implements OnInit {
 		this.alertaConflito = '';
 	}
 
+	// Verifica se há conflito de horário com eventos existente
 	verificarConflito(): boolean {
 		const inicio = new Date(this.horaInicio);
 		const fim = new Date(this.horaTermino);
@@ -106,6 +111,7 @@ export class CalendarComponent implements OnInit {
 		return false;
 	}
 
+	// Salva um novo evento ou atualiza um existente
 	salvarEvento(): void {
 		if (this.verificarConflito()) {
 			return;
@@ -160,6 +166,7 @@ export class CalendarComponent implements OnInit {
 		this.carregarEventos();
 	}
 
+	// Retorna o nome do mês atual formatado em português
 	get mesAtualNome(): string {
 		return new Date(this.anoAtual, this.mesAtual).toLocaleString('pt-BR', { month: 'long' })
 			.replace(/^./, (char) => char.toUpperCase());

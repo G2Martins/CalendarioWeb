@@ -27,6 +27,7 @@ export class RegisterComponent {
 			return;
 		}
 
+		// Cria um objeto com os dados do usuário para envio à API
 		const userData = { nome: this.nome, email: this.email, senha: this.senha };
 
 		this.authService.register(userData).subscribe({
