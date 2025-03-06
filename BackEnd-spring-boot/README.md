@@ -49,15 +49,33 @@ src/main/java/com/gustavoMartinsGripaldi/avaliacao
 
 ## 🔄 Endpoints Disponíveis
 
-| Método  | Endpoint                        | Descrição |
-|----------|--------------------------------|-------------|
-| **POST**   | `/api/usuarios`                  | Cria um novo usuário |
-| **GET**    | `/api/usuarios/{email}`          | Busca um usuário pelo e-mail |
-| **POST**   | `/api/eventos`                   | Cria um evento para um usuário |
-| **GET**    | `/api/eventos/{email}`           | Retorna todos os eventos de um usuário |
-| **GET**    | `/api/eventos/detalhes/{id}`     | Busca um evento pelo ID |
-| **PUT**    | `/api/eventos/{id}`              | Atualiza um evento existente |
-| **DELETE** | `/api/eventos/{id}`              | Remove um evento pelo ID |
+### Usuários
+| Método   | Endpoint                         | Descrição                           |
+|----------|----------------------------------|-------------------------------------|
+| **POST** | `/api/users`                     | Cria um novo usuário                |
+| **GET**  | `/api/users/email/{email}`       | Busca um usuário pelo e-mail        |
+
+### Eventos
+| Método   | Endpoint                         | Descrição                                                      |
+|----------|----------------------------------|----------------------------------------------------------------|
+| **POST** | `/api/events`                    | Cria um evento para um usuário                                 |
+| **GET**  | `/api/events/user/{email}`       | Retorna todos os eventos do usuário (criados e aceitos)          |
+| **GET**  | `/api/events/{eventId}`          | Busca um evento pelo ID                                          |
+| **PUT**  | `/api/events/{eventId}`          | Atualiza um evento existente                                     |
+| **DELETE** | `/api/events/{eventId}`        | Remove um evento pelo ID                                         |
+
+### Convites (Invites)
+| Método   | Endpoint                                               | Descrição                                                                          |
+|----------|--------------------------------------------------------|------------------------------------------------------------------------------------|
+| **POST** | `/api/events/{eventId}/invite`                         | Envia convites (lista de emails) para um evento                                    |
+| **PUT**  | `/api/events/{eventId}/invite/{convidadoEmail}/{status}`| Atualiza a resposta do convite (ACEITO ou RECUSADO) para um usuário                  |
+| **GET**  | `/api/events/invites/{email}`                          | Lista todos os convites (independentemente do status) para o usuário                 |
+| **GET**  | `/api/events/invites/{email}/{status}`                 | Lista convites para o usuário filtrados por status (ex.: PENDENTE)                   |
+
+> **Observação:**  
+> No fluxo de convites, o evento só aparecerá no calendário do usuário convidado se o status estiver definido como **ACEITO**.  
+> Se o convite estiver em **PENDENTE**, ele será listado apenas na aba de convites.
+
 
 ## 💪 Testando a API
 
@@ -83,6 +101,8 @@ Para testar os endpoints, você pode utilizar ferramentas como:
   "emailUsuario": "luisa@email.com"
 }
 ```
+> Para responder a um convite, utilize o método PUT no endpoint 
+> /api/events/{eventId}/invite/{convidadoEmail}/{status}, onde o status pode ser ACEITO ou RECUSADO.
 
 ## 🎬 Autor
 Desenvolvido por [Gustavo Martins Gripaldi](https://g2martins.github.io/G2Portfolio/).
