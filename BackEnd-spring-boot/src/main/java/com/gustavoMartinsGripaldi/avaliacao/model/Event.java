@@ -3,6 +3,7 @@ package com.gustavoMartinsGripaldi.avaliacao.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "events")
@@ -13,7 +14,8 @@ public class Event {
     private LocalDateTime horaInicio;
     private LocalDateTime horaTermino;
     private String userEmail;
-    private List<String> convidados;
+    private List<String> convidados = new ArrayList<>();
+
     private EventStatus status;
 
     public Event() {
