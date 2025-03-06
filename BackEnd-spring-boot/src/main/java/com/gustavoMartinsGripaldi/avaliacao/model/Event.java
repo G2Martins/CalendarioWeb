@@ -3,6 +3,7 @@ package com.gustavoMartinsGripaldi.avaliacao.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "events")
 public class Event {
@@ -12,15 +13,21 @@ public class Event {
     private LocalDateTime horaInicio;
     private LocalDateTime horaTermino;
     private String userEmail;
+    private List<String> convidados;
+    private EventStatus status;
 
-    public Event() {}
+    public Event() {
+        this.status = EventStatus.SEM_CONVIDADOS;
+    }
 
-    public Event(String id, String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userEmail) {
+    public Event(String id, String descricao, LocalDateTime horaInicio, LocalDateTime horaTermino, String userEmail, List<String> convidados, EventStatus status) {
         this.id = id;
         this.descricao = descricao;
         this.horaInicio = horaInicio;
         this.horaTermino = horaTermino;
         this.userEmail = userEmail;
+        this.convidados = convidados;
+        this.status = status != null ? status : EventStatus.SEM_CONVIDADOS;
     }
 
     public String getId() { return id; }
@@ -37,4 +44,9 @@ public class Event {
 
     public String getUserEmail() { return userEmail; }
     public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+    public List<String> getConvidados() { return convidados; }
+    public void setConvidados(List<String> convidados) { this.convidados = convidados; }
+
+    public EventStatus getStatus() { return status; }
+    public void setStatus(EventStatus status) { this.status = status; }
 }

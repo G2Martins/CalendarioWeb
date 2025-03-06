@@ -9,6 +9,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { CalendarComponent } from './pages/calendar/calendar.component';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
+import { InvitesComponent } from './components/invites/invites.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
     LoginComponent,
     RegisterComponent,
     CalendarComponent,
-    MenuBarComponent
+    MenuBarComponent,
+    InvitesComponent
   ],
   imports: [
     BrowserModule,

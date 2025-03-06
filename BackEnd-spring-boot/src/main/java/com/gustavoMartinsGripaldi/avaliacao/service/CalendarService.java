@@ -2,6 +2,8 @@ package com.gustavoMartinsGripaldi.avaliacao.service;
 
 import com.gustavoMartinsGripaldi.avaliacao.dto.EventDTO;
 import com.gustavoMartinsGripaldi.avaliacao.model.Event;
+import com.gustavoMartinsGripaldi.avaliacao.model.EventStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,9 @@ public class CalendarService {
                 eventDTO.getDescricao(),
                 eventDTO.getHoraInicio(),
                 eventDTO.getHoraTermino(),
-                email
+                email,
+                eventDTO.getConvidados(),
+                EventStatus.SEM_CONVIDADOS
         );
 
         Event savedEvent = eventService.createEvent(event);

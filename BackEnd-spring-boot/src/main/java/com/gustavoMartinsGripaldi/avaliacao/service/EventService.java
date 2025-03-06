@@ -1,6 +1,7 @@
 package com.gustavoMartinsGripaldi.avaliacao.service;
 
 import com.gustavoMartinsGripaldi.avaliacao.model.Event;
+import com.gustavoMartinsGripaldi.avaliacao.model.EventStatus;
 import com.gustavoMartinsGripaldi.avaliacao.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,4 +63,35 @@ public class EventService {
         return existing.getHoraInicio().isBefore(newEvent.getHoraTermino()) &&
                newEvent.getHoraInicio().isBefore(existing.getHoraTermino());
     }
+
+    // 🔹 Enviar convites
+    public Event addInvites(String eventId, List<String> convidados) {
+        return eventRepository.findById(eventId).map(event -> {
+            event.getConvidados().addAll(convidados);
+            event.setStatus(EventStatus.PENDENTE);
+            return eventRepository.save(event);
+        }).orElseThrow(() -> new RuntimeException("Evento não encontrado."));
+    }
+
+     // 🔹 Responder convite (Aceitar ou Recusar)
+     public Event updateInviteStatus(String eventId, String convidadoEmail, EventStatus status) {
+        return eventRepository.findById(eventId).map(event -> {
+            if (!event.getConvidados().contains(convidadoEmail)) {
+                throw new RuntimeException("Usuário não convidado para este evento.");
+            }
+            event.setStatus(status);
+            return eventRepository.save(event);
+        }).orElseThrow(() -> new RuntimeException("Evento não encontrado."));
+    }
+
+    // 🔹 Buscar eventos em que um usuário foi convidado
+    public List<Event> getInvitedEvents(String convidadoEmail) {
+        return eventRepository.findByConvidadosContaining(convidadoEmail);
+    }
+
+    // 🔹 Buscar eventos com status específico para um convidado
+    public List<Event> getInvitedEventsByStatus(String convidadoEmail, EventStatus status) {
+        return eventRepository.findByConvidadosContainingAndStatus(convidadoEmail, status);
+    }
+
 }
