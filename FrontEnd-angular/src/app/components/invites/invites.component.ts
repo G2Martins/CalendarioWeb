@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InviteService } from 'src/app/services/invite.service';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
 	selector: 'app-invites',
@@ -10,11 +11,17 @@ export class InvitesComponent implements OnInit {
 	modalAberto: boolean = false;
 	eventoSelecionado: any = null;
 	emailConvidado: string = '';
+	eventos: any[] = [];
+	dropdownAberto: boolean = false;
 
-	constructor(private inviteService: InviteService) { }
+	constructor(
+		private inviteService: InviteService,
+		private eventService: EventService
+	) {}
 
 	ngOnInit(): void {
 		this.carregarConvites();
+		this.carregarEventos();
 	}
 
 	carregarConvites(): void {
@@ -23,20 +30,27 @@ export class InvitesComponent implements OnInit {
 		});
 	}
 
-	aceitarConvite(eventId: string): void {
-		this.inviteService.responderConvite(eventId, 'ACEITO').subscribe(() => {
-			this.carregarConvites();
-		});
+	carregarEventos(): void {
+		const userEmail = localStorage.getItem('userEmail');
+		if (userEmail) {
+			this.eventService.getEventsByUser(userEmail).subscribe((eventos) => {
+				this.eventos = eventos;
+			});
+		}
 	}
 
-	recusarConvite(eventId: string): void {
-		this.inviteService.responderConvite(eventId, 'RECUSADO').subscribe(() => {
-			this.carregarConvites();
-		});
+	toggleDropdown(): void {
+		this.dropdownAberto = !this.dropdownAberto;
+	}
+
+	selecionarEvento(evento: any): void {
+		this.eventoSelecionado = evento;
+		this.dropdownAberto = false;
+		this.abrirModal(evento);
 	}
 
 	abrirModal(evento: any): void {
-		this.eventoSelecionado = evento;
+		this.eventoSelecionado = evento || { descricao: 'Novo Evento' };
 		this.emailConvidado = '';
 		this.modalAberto = true;
 	}
@@ -48,10 +62,23 @@ export class InvitesComponent implements OnInit {
 	}
 
 	enviarConvite(): void {
-		if (!this.emailConvidado) return;
+		if (!this.emailConvidado || !this.eventoSelecionado?.id) return;
 
-		this.inviteService.enviarConvite(this.eventoSelecionado.id, this.emailConvidado).subscribe(() => {
-			this.fecharModal();
+		this.inviteService.enviarConvite(this.eventoSelecionado.id, this.emailConvidado)
+			.subscribe(() => {
+				this.fecharModal();
+			});
+	}
+
+	aceitarConvite(eventId: string): void {
+		this.inviteService.responderConvite(eventId, 'ACEITO').subscribe(() => {
+			this.carregarConvites();
+		});
+	}
+
+	recusarConvite(eventId: string): void {
+		this.inviteService.responderConvite(eventId, 'RECUSADO').subscribe(() => {
+			this.carregarConvites();
 		});
 	}
 }
