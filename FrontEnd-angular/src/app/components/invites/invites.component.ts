@@ -26,7 +26,7 @@ export class InvitesComponent implements OnInit {
 
 	carregarConvites(): void {
 		this.inviteService.listarConvites().subscribe((data) => {
-			this.convites = data;
+			this.convites = data.filter((evento: any) => evento.status === 'PENDENTE');
 		});
 	}
 
@@ -71,8 +71,13 @@ export class InvitesComponent implements OnInit {
 	}
 
 	aceitarConvite(eventId: string): void {
-		this.inviteService.responderConvite(eventId, 'ACEITO').subscribe(() => {
-			this.carregarConvites();
+		this.inviteService.responderConvite(eventId, 'ACEITO').subscribe({
+			next: () => {
+				console.log(`Convite para o evento ${eventId} aceito.`);
+				this.carregarConvites();
+				this.eventService.carregarEventos();
+			},
+			error: (err) => console.error(`Erro ao aceitar convite:`, err)
 		});
 	}
 

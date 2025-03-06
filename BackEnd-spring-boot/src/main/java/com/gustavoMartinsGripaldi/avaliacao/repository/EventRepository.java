@@ -1,14 +1,12 @@
 package com.gustavoMartinsGripaldi.avaliacao.repository;
 
 import com.gustavoMartinsGripaldi.avaliacao.model.Event;
-import com.gustavoMartinsGripaldi.avaliacao.model.EventStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface EventRepository extends MongoRepository<Event, String> {
-    List<Event> findByUserEmail(String userEmail); // Para listar eventos de um usuário específico.
     
-    List<Event> findByConvidadosContaining(String convidadoEmail); // Para listar eventos que o usuário foi convidado.
+    List<Event> findByUserEmail(String userEmail); // Busca eventos criados pelo usuário
 
-    List<Event> findByConvidadosContainingAndStatus(String convidadoEmail, EventStatus status); // Para listar convites filtrando pelo status.
+    List<Event> findByConvidadosContaining(String convidadoEmail); // Busca eventos onde o usuário foi convidado
 }

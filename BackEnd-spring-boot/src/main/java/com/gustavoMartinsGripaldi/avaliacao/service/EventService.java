@@ -29,9 +29,20 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    // 🔹 Buscar eventos pelo email do usuário
+    // 🔹 Buscar eventos do usuário (criados)
     public List<Event> getEventsByUserEmail(String email) {
-        return eventRepository.findByUserEmail(email);
+        // Eventos criados pelo usuário
+        List<Event> createdEvents = eventRepository.findByUserEmail(email);
+        
+        // Eventos onde o usuário foi convidado, mas somente os que estão ACEITO
+        List<Event> invitedEvents = eventRepository.findByConvidadosContaining(email)
+                .stream()
+                .filter(event -> event.getStatus() == EventStatus.ACEITO)
+                .toList();
+        
+        // Mesclar as duas listas
+        createdEvents.addAll(invitedEvents);
+        return createdEvents;
     }
 
     // 🔹 Buscar um evento pelo ID
@@ -61,25 +72,38 @@ public class EventService {
     // 🔹 Verifica sobreposição de horários
     private boolean overlaps(Event existing, Event newEvent) {
         return existing.getHoraInicio().isBefore(newEvent.getHoraTermino()) &&
-               newEvent.getHoraInicio().isBefore(existing.getHoraTermino());
+                newEvent.getHoraInicio().isBefore(existing.getHoraTermino());
     }
 
-    // 🔹 Enviar convites
-    public Event addInvites(String eventId, List<String> convidados) {
+    // 🔹 Enviar convites para usuários
+    public Event addInvites(String eventId, List<String> emails) {
         return eventRepository.findById(eventId).map(event -> {
-            event.getConvidados().addAll(convidados);
+            event.getConvidados().addAll(emails);
             event.setStatus(EventStatus.PENDENTE);
             return eventRepository.save(event);
         }).orElseThrow(() -> new RuntimeException("Evento não encontrado."));
     }
 
-     // 🔹 Responder convite (Aceitar ou Recusar)
-     public Event updateInviteStatus(String eventId, String convidadoEmail, EventStatus status) {
+    // 🔹 Responder convite (Aceitar ou Recusar)
+    public Event updateInviteStatus(String eventId, String convidadoEmail, EventStatus status) {
         return eventRepository.findById(eventId).map(event -> {
             if (!event.getConvidados().contains(convidadoEmail)) {
                 throw new RuntimeException("Usuário não convidado para este evento.");
             }
-            event.setStatus(status);
+
+            // Se pelo menos um convidado aceita, o evento é marcado como ACEITO
+            if (status == EventStatus.ACEITO) {
+                event.setStatus(EventStatus.ACEITO);
+            } else {
+                // Se todos os convidados recusarem, o evento é marcado como RECUSADO
+                boolean todosRecusaram = event.getConvidados().stream()
+                        .allMatch(email -> email.equals(convidadoEmail));
+
+                if (todosRecusaram) {
+                    event.setStatus(EventStatus.RECUSADO);
+                }
+            }
+
             return eventRepository.save(event);
         }).orElseThrow(() -> new RuntimeException("Evento não encontrado."));
     }
@@ -89,9 +113,12 @@ public class EventService {
         return eventRepository.findByConvidadosContaining(convidadoEmail);
     }
 
-    // 🔹 Buscar eventos com status específico para um convidado
+    // 🔹 Buscar eventos em que um usuário foi convidado e possuem um status específico
     public List<Event> getInvitedEventsByStatus(String convidadoEmail, EventStatus status) {
-        return eventRepository.findByConvidadosContainingAndStatus(convidadoEmail, status);
+        return eventRepository.findByConvidadosContaining(convidadoEmail)
+                .stream()
+                .filter(event -> event.getStatus() == status)
+                .toList();
     }
 
 }
