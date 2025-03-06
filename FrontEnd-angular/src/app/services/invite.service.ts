@@ -37,6 +37,4 @@ export class InviteService {
 	enviarConvite(eventId: string, email: string): Observable<any> {
 		return this.http.post(`${this.apiUrl}/${eventId}/invite`, [email]);
 	}
-
-
 }
