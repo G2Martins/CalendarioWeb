@@ -84,6 +84,7 @@ export class InvitesComponent implements OnInit {
 	recusarConvite(eventId: string): void {
 		this.inviteService.responderConvite(eventId, 'RECUSADO').subscribe(() => {
 			this.carregarConvites();
+			this.eventService.carregarEventos();
 		});
 	}
 }
