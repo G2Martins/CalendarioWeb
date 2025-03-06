@@ -23,8 +23,6 @@ public class UserService {
         return userRepository.save(new User(null, user.getNome(), user.getEmail(), user.getSenha()));
     }
     
-    
-
     // 🔹 Retorna um usuário pelo e-mail
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
