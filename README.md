@@ -62,18 +62,34 @@ O projeto está dividido em duas principais pastas:
 
 ---
 
-## 🔗 Endpoints da API
+## 🔄 Endpoints Disponíveis
 
-Os principais endpoints do backend podem ser acessados via **Postman** ou outro cliente HTTP.
+### Usuários
+| Método   | Endpoint                         | Descrição                           |
+|----------|----------------------------------|-------------------------------------|
+| **POST** | `/api/users`                     | Cria um novo usuário                |
+| **GET**  | `/api/users/email/{email}`       | Busca um usuário pelo e-mail        |
 
-| Método  | Endpoint                | Descrição |
-|---------|-------------------------|-----------|
-| **POST** | `/api/users`            | Cria um novo usuário |
-| **POST** | `/api/events`           | Cria um evento |
-| **GET**  | `/api/users/{email}`    | Busca um usuário pelo e-mail |
-| **GET**  | `/api/events/{email}`   | Retorna todos os eventos de um usuário |
-| **PUT**  | `/api/events/{eventId}` | Atualiza um evento existente |
-| **DELETE** | `/api/events/{eventId}` | Remove um evento |
+### Eventos
+| Método   | Endpoint                         | Descrição                                                      |
+|----------|----------------------------------|----------------------------------------------------------------|
+| **POST** | `/api/events`                    | Cria um evento para um usuário                                 |
+| **GET**  | `/api/events/user/{email}`       | Retorna todos os eventos do usuário (criados e aceitos)          |
+| **GET**  | `/api/events/{eventId}`          | Busca um evento pelo ID                                          |
+| **PUT**  | `/api/events/{eventId}`          | Atualiza um evento existente                                     |
+| **DELETE** | `/api/events/{eventId}`        | Remove um evento pelo ID                                         |
+
+### Convites (Invites)
+| Método   | Endpoint                                               | Descrição                                                                          |
+|----------|--------------------------------------------------------|------------------------------------------------------------------------------------|
+| **POST** | `/api/events/{eventId}/invite`                         | Envia convites (lista de emails) para um evento                                    |
+| **PUT**  | `/api/events/{eventId}/invite/{convidadoEmail}/{status}`| Atualiza a resposta do convite (ACEITO ou RECUSADO) para um usuário                  |
+| **GET**  | `/api/events/invites/{email}`                          | Lista todos os convites (independentemente do status) para o usuário                 |
+| **GET**  | `/api/events/invites/{email}/{status}`                 | Lista convites para o usuário filtrados por status (ex.: PENDENTE)                   |
+
+> **Observação:**  
+> No fluxo de convites, o evento só aparecerá no calendário do usuário convidado se o status estiver definido como **ACEITO**.  
+> Se o convite estiver em **PENDENTE**, ele será listado apenas na aba de convites.
 
 ---
 
