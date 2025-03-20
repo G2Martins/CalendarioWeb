@@ -98,7 +98,7 @@ export class CalendarComponent implements OnInit {
 				if (this.eventoSelecionado && evento.id === this.eventoSelecionado.id) {
 					continue; // Pula a verificação para o próprio evento
 				}
-				
+
 				const eventoInicio = new Date(evento.horaInicio);
 				const eventoFim = new Date(evento.horaTermino);
 
@@ -118,6 +118,15 @@ export class CalendarComponent implements OnInit {
 
 	// Salva um novo evento ou atualiza um existente
 	salvarEvento(): void {
+		const inicio = new Date(this.horaInicio);
+  		const fim = new Date(this.horaTermino);
+		
+		// Verifica se a hora de início é maior ou igual à hora de término
+		if (inicio >= fim) {
+			this.alertaConflito = 'A hora de início não pode ser posterior ou igual à hora de término.';
+			return;
+		}
+		
 		if (this.verificarConflito()) {
 			return;
 		}
