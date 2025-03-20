@@ -13,6 +13,7 @@ export class InvitesComponent implements OnInit {
 	emailConvidado: string = '';
 	eventos: any[] = [];
 	dropdownAberto: boolean = false;
+	alertaSucesso: boolean = false;
 
 	constructor(
 		private inviteService: InviteService,
@@ -64,9 +65,16 @@ export class InvitesComponent implements OnInit {
 	enviarConvite(): void {
 		if (!this.emailConvidado || !this.eventoSelecionado?.id) return;
 
+		this.alertaSucesso = false;
+
 		this.inviteService.enviarConvite(this.eventoSelecionado.id, this.emailConvidado)
 			.subscribe(() => {
 				this.fecharModal();
+				this.alertaSucesso = true;
+            
+            	setTimeout(() => {
+                	this.alertaSucesso = false;
+           		}, 1500);
 			});
 	}
 
