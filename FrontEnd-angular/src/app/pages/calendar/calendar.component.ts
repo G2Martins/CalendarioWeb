@@ -94,6 +94,11 @@ export class CalendarComponent implements OnInit {
 		{
 			for (let evento of dia.events) 
 			{
+				// Ignora o evento que está sendo editado
+				if (this.eventoSelecionado && evento.id === this.eventoSelecionado.id) {
+					continue; // Pula a verificação para o próprio evento
+				}
+				
 				const eventoInicio = new Date(evento.horaInicio);
 				const eventoFim = new Date(evento.horaTermino);
 
