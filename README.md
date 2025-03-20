@@ -3,6 +3,8 @@
 Bem-vindo ao repositório do **Sistema de Calendário de Eventos**! 🚀
 
 Este projeto consiste em um sistema web completo para gerenciar eventos, com **frontend** e **backend** integrados. Ele permite que os usuários criem, editem, visualizem e removam eventos de maneira intuitiva e eficiente.
+[![Demonstração do Sistema](https://img.youtube.com/vi/3K9bs3gXBXaRq93n/0.jpg)](https://youtu.be/ls9PW4uSBew?si=3K9bs3gXBXaRq93n)
+
 
 ## 🏗 Estrutura do Repositório
 
